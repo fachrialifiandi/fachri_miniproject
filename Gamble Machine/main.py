@@ -103,7 +103,7 @@ def get_number_of_lines():
             "Enter the number of lines to bet on (1-" + str(MAX_LINES) + ")?  ")
         if lines.isdigit():
             lines = int(lines)
-            if (1 <= lines <= MAX_LINES):
+            if (1 <= lines <= MAX_LINES):  # if lines <= 1 and lines <= MAX_LINES
                 break
             else:
                 print("Enter a valid number of lines.")
@@ -130,6 +130,8 @@ def get_bet():
             print("Please enter a valid number.")
 
     return amount
+
+# Mensimulasikan satu putaran permainan mesin slot
 
 
 def spin(balance):

@@ -1,42 +1,105 @@
-import random
-import time
 import os
+import math
 
 os.system('cls')
 
-OPERATORS = ["+", "-", "*"]
-MIN_OPERAND = 3
-MAX_OPERAND = 12
-TOTAL_PROBLEMS = 10
 
-
-def generate_problem():
-    left = random.randint(MIN_OPERAND, MAX_OPERAND)
-    right = random.randint(MIN_OPERAND, MAX_OPERAND)
-    operator = random.choice(OPERATORS)
-
-    expr = str(left) + " " + operator + " " + str(right)
-    answer = eval(expr)
-    return expr, answer
-
-
-wrong = 0
-input('Press enter to start!')
-print('=====================')
-
-start_time = time.time()
-
-for i in range(TOTAL_PROBLEMS):
-    expr, answer = generate_problem()
+def Menu(Choice):
     while True:
-        guess = input("Problem #" + str(i + 1) + ": " + expr + " = ")
-        if guess == str(answer):
-            break
-        wrong += 1
+        print("\n      MAIN MENU")
+        print('=====================')
+        print('1. Faktorial')
+        print('2. Fibonacci')
+        print('3. Quadratic Equations')
+        print('0. Out')
+        Choice = int(input("What menu do you want to choose: "))
 
-end_time = time.time()
-total_time = round(end_time - start_time, 2)
+        if (Choice > 0) or (Choice < 3):
+            return Choice
+        else:
+            print('Wrong number sir! ')
+            os.system('pause')
+            os.system('cls')
 
 
-print('=====================')
-print('Nice Work! You Finished in', total_time, "seconds!")
+def faktorial():
+
+    Number = int(input("What number do you want to factorize? "))
+
+    if Number < 0:
+        print('Factorial is not intended for negative numbers.')
+    else:
+        Result = 1
+        if Number == 0:
+            Result = 1
+        else:
+            for i in range(1, Number + 1):
+                Result = Result * i
+
+        print(f'Results of Factorials {Number} is {Result}')
+        print()
+
+
+def fibonacci():
+
+    # Logikanya sederhana: setiap angka = jumlah dua angka sebelumnya.
+    Number = int(input("What number do you want to put? "))
+
+    if Number < 0:
+        print('Negatif number is not allowed')
+
+    a, b = 0, 1
+    if Number == 1:
+        print(f"Deret Fibonacci: {a}")
+    else:
+        for _ in range(Number):
+            print(a, end=" ")
+
+            a, b = b, a + b
+
+        print()
+
+
+def q_equations():
+
+    a = int(input("What value of a? "))
+    b = int(input("What value of b? "))
+    c = int(input("What value of c? "))
+
+    print(f"Equations: {a}x² + {b}x + {c} = 0")
+
+    D = b**2 - 4*a*c
+    if D < 0:
+
+        print("\nThere is no real number")
+
+    elif D == 0:
+        x = -b / (2*a)
+
+        print("\nTwin roots: {x}")
+
+    else:
+        x1 = (-b + math.sqrt(D)) / (2*a)
+        x2 = (-b - math.sqrt(D)) / (2*a)
+
+        print(f"\nThe value is x1: {x1}, x2: {x2} ")
+
+
+# Main Body
+Choice = -1
+while (Choice != 0):
+    Choice = Menu(Choice)
+    os.system('cls')
+
+    match (Choice):
+        case 1:
+            faktorial()
+        case 2:
+            fibonacci()
+        case 3:
+            q_equations()
+        case 0:
+            print('Thanks for using this program.')
+
+    os.system('pause')
+    os.system('cls')
