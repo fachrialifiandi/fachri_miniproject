@@ -63,10 +63,41 @@ def weight():
             continue
 
 
+def temperature():
+
+    while True:
+        os.system('cls')
+
+        unit = print(
+            "[#048ABF]Is this temperature in Celcius or Fahrenheit (C/F):[/] ", end="")
+        unit = input()
+
+        try:
+            temp = print("[#048ABF]Enter the temprature:[/] ", end="")
+            temp = float(input())
+
+        except ValueError:
+            print('[#C51F1A]Please enter a Valid number.[/]')
+            os.system('pause')
+            continue
+
+        if unit == "C":
+            temp = round((9 * temp) / 5 + 32, 1)
+            print(f'The temperature in Fahrenheit is : {temp}°F')
+            os.system('pause')
+            break
+
+        elif unit == "F":
+            temp = round((temp - 32) * 5/9, 1)
+            print(f'The temperature in Celcius is : {temp}°C')
+            os.system('pause')
+            break
+        else:
+            print(f"{unit} is an invalid unit of measurement")
+
+
 # Main Body
-
 Menu = -1
-
 while (Menu != 0):
     Menu = program_menu()
 
@@ -75,7 +106,8 @@ while (Menu != 0):
         weight()
 
     elif Menu == 2:
-        pass
+        print("\n-----------")
+        temperature()
 
     else:
         print("[#19E62F]Thanks for using our program !![/]")
