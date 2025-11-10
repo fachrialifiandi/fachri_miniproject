@@ -18,6 +18,7 @@ class WeatherApp(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Weather App")
+        self.setFixedSize(400, 500)
 
         vbox = QVBoxLayout()
 

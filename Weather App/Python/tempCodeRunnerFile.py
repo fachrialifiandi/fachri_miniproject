@@ -1,0 +1,1 @@
+self.setFixedSize(400, 500)

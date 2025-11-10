@@ -1,0 +1,1 @@
+self.city_label.setAlignment(Qt.AlignLeft)
