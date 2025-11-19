@@ -120,7 +120,7 @@ class WeatherApp(QWidget):
                         "Gateway Timeout:\nNo response from the server ")
 
                 case _:
-                    self.display_error("HTTP error occured:\n{http_error}")
+                    self.display_error(f"HTTP error occured:\n{http_error}")
 
         except requests.exceptions.ConnectionError:
             self.display_error(

@@ -1,1 +1,1 @@
-self.city_label.setAlignment(Qt.AlignLeft)
+dzuhur = data["data"]["timings"][""]
