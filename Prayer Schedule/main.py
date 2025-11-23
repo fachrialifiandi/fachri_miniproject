@@ -2,6 +2,7 @@ import datetime
 import os
 import sys
 import requests
+from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit,
                              QPushButton, QVBoxLayout, QHBoxLayout, QFrame)
 from PyQt5.QtCore import Qt
@@ -29,9 +30,65 @@ class PrayerSchApp(QWidget):
 
         self.error_label = QLabel(self)
 
+        self.prayer_frames = []
         self.time_labels = []
+
+        self.get_font()
         self.initUi()
-        self.date()
+        self.get_date()
+
+    def get_font(self):
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
+        font_files = [
+            "PlusJakartaSans-Regular.ttf",
+            "PlusJakartaSans-SemiBold.ttf",
+            "PlusJakartaSans-Bold.ttf"
+        ]
+
+        for filename in font_files:
+
+            font_path = os.path.join(base_dir, "fonts", filename)
+
+            font_id = QFontDatabase.addApplicationFont(font_path)
+
+        if font_id < 0:
+            print("Gagal dimuat")
+        else:
+            font_families = QFontDatabase.applicationFontFamilies(font_id)
+            print(f"Font berhasil dimuat: {font_families[0]}")
+
+    def get_active_prayer(self, timings):
+        now = datetime.datetime.now().strftime("%H:%M")
+
+        fajr = timings['Fajr']
+        dhuhr = timings['Dhuhr']
+        asr = timings['Asr']
+        maghrib = timings['Maghrib']
+        isha = timings['Isha']
+
+        index = -1
+
+        if now >= fajr and now < dhuhr:
+            index = 0
+        elif now >= dhuhr and now < asr:
+            index = 1
+        elif now >= asr and now < maghrib:
+            index = 2
+        elif now >= maghrib and now < isha:
+            index = 3
+        elif now >= isha or now < fajr:
+            index = 4
+
+        for i, frame in enumerate(self.prayer_frames):
+            if i == index:
+                frame.setObjectName("ActivePrayerBox")
+            else:
+                frame.setObjectName("prayerBox")
+
+            frame.style().unpolish(frame)
+            frame.style().polish(frame)
 
     def initUi(self):
         self.setWindowTitle("Player Schdule App")
@@ -84,12 +141,9 @@ class PrayerSchApp(QWidget):
         for name, time in data:
 
             box_frame = QFrame(self)
-            
-            if name == "Fajr":
-                box_frame.setObjectName("ActivePrayerBox")
-            else:
-                box_frame.setObjectName("prayerBox")
-                
+
+            box_frame.setObjectName("prayerBox")
+
             box_vlayout = QVBoxLayout()
             box_vlayout.setSpacing(20)
             box_vlayout.setContentsMargins(0, 10, 0, 50)
@@ -108,9 +162,11 @@ class PrayerSchApp(QWidget):
 
             box_vlayout.addWidget(pray_label)
             box_vlayout.addWidget(time_label)
-
             box_frame.setLayout(box_vlayout)
+
             main_hbox.addWidget(box_frame)
+
+            self.prayer_frames.append(box_frame)
 
         main_vbox.addLayout(main_hbox)
         self.get_button.clicked.connect(self.button_click)
@@ -126,33 +182,33 @@ class PrayerSchApp(QWidget):
         self.get_button.setObjectName("get_button")
 
         self.setStyleSheet("""
-            
+
             QLabel{
                 font-family: "Plus Jakarta Sans";
                 font-size: 14px;
                 font-weight: 450;
             }
-            
+
             QLabel#pray_label{
                 font-family: "Plus Jakarta Sans";
                 font-size: 16px;
                 font-weight:500;
             }
-            
+
             QLabel#time_label{
                 font-family: "Plus Jakarta Sans";
                 font-size: 20px;
                 font-weight:700;
                 qproperty-alignment: 'AlignHCenter';
-            } 
-            
-             
+            }
+
+
             QLabel#location_label{
                 font-family: "Plus Jakarta Sans";
                 font-size: 21px;
                 font-weight: 600;
             }
-            
+
             QLabel#error_label{
                 font-family: "Plus Jakarta Sans";
                 font-size: 21px;
@@ -160,21 +216,21 @@ class PrayerSchApp(QWidget):
                 padding-bottom: 15px;
                 padding-top: 0px;
             }
-            
+
             QFrame#prayerBox{
                 background-color: #ffffff;
                 border: 2px solid transparent;
                 border-radius: 12px;
             }
-            
+
             QFrame#ActivePrayerBox{
                 font-family: "Plus Jakarta Sans";
                 background-color: #ffffff;
                 border: 3px solid #1DB954;
                 border-radius: 12px;
             }
-            
-            
+
+
             QLineEdit#city_input{
                 font-family: "Plus Jakarta Sans";
                 font-size: 16px;
@@ -183,7 +239,7 @@ class PrayerSchApp(QWidget):
                 border: 1px solid #ced4da;
                 max-width: 300px;
             }
-            
+
             QLineEdit#country_input{
                 font-family: "Plus Jakarta Sans";
                 font-size: 16px;
@@ -192,7 +248,7 @@ class PrayerSchApp(QWidget):
                 border: 1px solid #ced4da;
                 max-width: 300px;
             }
-            
+
             QPushButton#get_button{
                 font-size: 16px;
                 color: white;
@@ -207,7 +263,7 @@ class PrayerSchApp(QWidget):
             QPushButton#get_button:hover{
                 background-color: #1ED760;
             }
-            
+
                            """)
 
         self.setFixedSize(800, 500)
@@ -240,7 +296,10 @@ class PrayerSchApp(QWidget):
             data = response.json()
 
             if data["code"] == 200:
+                timings = data['data']['timings']
+
                 self.display_schedule(data)
+                self.get_active_prayer(timings)
 
                 location_label = f"{city}, {country}"
                 self.location_label.setText(location_label)
@@ -293,20 +352,17 @@ class PrayerSchApp(QWidget):
         self.city_input.clear()
         self.country_input.clear()
 
-    def date(self):
+    def get_date(self):
         now = datetime.datetime.now()
         gregorian_var = Gregorian(now.year, now.month, now.day)
 
         hijri_date = gregorian_var.to_hijri()
-
         day = hijri_date.day
         month_name = hijri_date.month_name()
         year = hijri_date.year
 
         gregorian = now.strftime("%d %B,  %Y")
-
         hijri = f"{day} {month_name},  {year}"
-
         final_date = f"{gregorian} | {hijri}"
 
         self.date_label.setText(final_date)
