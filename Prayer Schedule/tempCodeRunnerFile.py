@@ -1,1 +1,0 @@
-dzuhur = data["data"]["timings"][""]
