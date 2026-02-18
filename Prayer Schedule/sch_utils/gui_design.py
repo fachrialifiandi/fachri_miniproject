@@ -287,6 +287,6 @@ class PrayerSchApp(QWidget):
 
         self.time_labels[0].setText(f"{fajr} am")
         self.time_labels[1].setText(f"{dhuhr} am")
-        self.time_labels[2].setText(f"{asr} am")
-        self.time_labels[3].setText(f"{maghrib} am")
-        self.time_labels[4].setText(f"{isha} am")
+        self.time_labels[2].setText(f"{asr} pm")
+        self.time_labels[3].setText(f"{maghrib} pm")
+        self.time_labels[4].setText(f"{isha} pm")

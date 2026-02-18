@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 
 def get_schedule(self):
@@ -10,18 +11,18 @@ def get_schedule(self):
         self.location_label.setText("Please fill in the text.")
         return
 
-   
-    url = f"http://api.aladhan.com/v1/timingsByCity/11-11-2025?city={city}&country={country}&method=20"
+    today_date = datetime.now().strftime("%d-%m-%Y")
+
+    url = f"http://api.aladhan.com/v1/timingsByCity/{today_date}?city={city}&country={country}&method=20"
 
     try:
-        response = requests.get(url, timeout=10)  # Tambahkan timeout biar aman
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
         data = response.json()
 
         if data["code"] == 200:
             timings = data['data']['timings']
 
-            
             self.display_schedule(data)
             self.get_active_prayer(timings)
 
