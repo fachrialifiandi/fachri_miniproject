@@ -120,17 +120,22 @@ const printRows = (rows) => {
 const getWinnings = (rows, bet, lines) => {
   let winnings = 0;
 
+  // main loop: runs as many as the number of lines placed bets by the player
   for (let row = 0; row < lines; row++) {
+    // take one row from (rows)
     const symbols = rows[row];
+    // flag
     let allSame = true;
-
+    // check each symbol in the row one by one.
     for (const symbol of symbols) {
+      // compares the current symbol with the first symbol in the row
       if (symbol != symbols[0]) {
         allSame = false;
         break;
       }
     }
     if (allSame) {
+      // calculate the bet value multiplied by the symbol multiplier value
       winnings += bet * SYMBOL_VALUES[symbols[0]];
     }
   }
